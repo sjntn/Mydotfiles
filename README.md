@@ -10,7 +10,11 @@ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/
 % brew bundle ~/.Brewfile
 ```
 
-# Install OhMyZsh
+# Install OhMyZsh 
+After do
+```
+sh install.sh
+```
 
 ```
 curl -L http://install.ohmyz.sh | sh

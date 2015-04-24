@@ -39,7 +39,7 @@ install python
 install ghc cabal-install
 
 # Install Java
-cask install java6
+cask install java
 
 # Install Scala
 install scala
@@ -60,8 +60,12 @@ cask install line
 cask install slack
 cask install sequel-pro
 cask install sketch
+cask install cyberduck
+cask install duet
+cask install gyazo
+cask install rstudio
 
-# Install editor (choose your favorite at the moment)
+# Install editor
 cask install sublime-text3
 cask install atom
 cask install macvim
@@ -69,8 +73,8 @@ cask install macvim
 # Install zsh
 install zsh
 
-
 tap homebrew/versions
 
 # Remove outdated versions from the cellar
 cleanup
+cask cleanup
