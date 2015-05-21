@@ -19,6 +19,9 @@ alias skype='open -a Skype'
 alias gyazo='open -a Gyazo'
 alias skitch='open -a Skitch'
 alias hipchat='open -a Hipchat'
+alias photoshop='open -a Adobe\ Photoshop\ CC\ 2014'
+alias notes='open -a notes'
+alias wunderlist="open -a wunderlist"
 
 source ~/.mysqlenv/etc/bashrc
 if which pyenv > /dev/null; then
