@@ -2,6 +2,7 @@ ZSH=$HOME/.oh-my-zsh
 ZSH_THEME="miloshadzic"
 source $ZSH/oh-my-zsh.sh
 
+plugins=(git)
 
 if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 
@@ -20,8 +21,23 @@ alias gyazo='open -a Gyazo'
 alias skitch='open -a Skitch'
 alias hipchat='open -a Hipchat'
 alias photoshop='open -a Adobe\ Photoshop\ CC\ 2014'
+alias illustrator='open -a Adobe\ Illustrator\ CC\ 2014'
 alias notes='open -a notes'
-alias wunderlist="open -a wunderlist"
+alias wunderlist='open -a Wunderlist'
+alias rm="rmtrash"
+# git plugin
+alias ggpush='git push origin $(current_branch)'
+alias ggpull='git pull origin $(current_branch)'
+alias gst='git status'
+alias gd='git diff'
+alias gb='git branch'
+alias gl="git log"
+alias gba='git branch -a'
+alias gco='git checkout'
+alias gcm='git checkout master'
+alias ga='git add'
+alias grh='git reset HEAD'
+alias gf='git fetch'
 
 source ~/.mysqlenv/etc/bashrc
 if which pyenv > /dev/null; then

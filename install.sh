@@ -1,8 +1,14 @@
+# Install Homebrew
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
 # Update
 brew update
 
 # Upgrade
 brew upgrade
+
+# bundle ~/.Brewfile
+brew bundle ~/.Brewfile
 
 # Install homebrew-cask
 brew tap phinze/homebrew-cask || true
@@ -64,6 +70,8 @@ brew cask install cyberduck
 brew cask install duet
 brew cask install gyazo
 brew cask install rstudio
+brew cask install virtualbox
+brew cask install vagrant
 
 # Install editor
 brew cask install sublime-text3
