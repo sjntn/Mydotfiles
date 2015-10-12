@@ -1,9 +1,14 @@
-# Install OhMyZsh 
-After do
+# Install
 ```
-sh install.sh
+./install.sh
 ```
 
+# HomeBrew
+```
+brew brewdle
+```
+
+# Install OhMyZsh 
 ```
 curl -L http://install.ohmyz.sh | sh
 ```
