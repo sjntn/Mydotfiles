@@ -24,6 +24,7 @@ alias photoshop='open -a Adobe\ Photoshop\ CC\ 2014'
 alias illustrator='open -a Adobe\ Illustrator\ CC\ 2014'
 alias notes='open -a notes'
 alias wunderlist='open -a Wunderlist'
+alias xcode='open -a Xcode'
 alias rm="rmtrash"
 # git plugin
 alias ggpush='git push origin $(current_branch)'
