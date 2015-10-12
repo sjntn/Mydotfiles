@@ -72,6 +72,7 @@ brew cask install gyazo
 brew cask install rstudio
 brew cask install virtualbox
 brew cask install vagrant
+brew cask install wunderlist
 
 # Install editor
 brew cask install sublime-text3
@@ -79,6 +80,14 @@ brew cask install atom
 brew cask install macvim
 
 brew tap homebrew/versions
+
+# Install Docker
+brew cask search docker toolbox
+# make docker-machine default
+eval "$(docker-machine env default)"
+
+# Install tmux
+brew install tmux
 
 # Install zsh
 brew install zsh
