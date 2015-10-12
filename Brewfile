@@ -1,80 +1,80 @@
-# Update
-update
-
-# Upgrade
-upgrade
-
-# Install homebrew-cask
-tap phinze/homebrew-cask || true
-install brew-cask
-
-install ansible
-install cmake
-install imagemagick
-install phantomjs
-install pow
-install tree
-install wget
-install w3m
-install z
-
-# Install Ruby
-install rbenv
-install ruby-build
-
-# Install Datebase
-install mysql
-install postgresql
-install redis
-install mongodb
-install memcached
-
-# Install Node
-install node
-
-# Install Python
-install python
-
-# Install Haskell
-install ghc cabal-install
-
-# Install Java
-cask install java
-
-# Install Scala
-install scala
-install sbt
-
-# Install peco
-tap peco/peco
-install peco
-
-# Install must apps
-cask install google-chrome
-cask install firefox
-cask install dropbox
-cask install evernote
-cask install iterm2
-cask install skype
-cask install line
-cask install slack
-cask install sequel-pro
-cask install sketch
-cask install cyberduck
-cask install duet
-cask install gyazo
-cask install rstudio
-
-# Install editor
-cask install sublime-text3
-cask install atom
-cask install macvim
-
-# Install zsh
-install zsh
-
-tap homebrew/versions
-
-# Remove outdated versions from the cellar
-cleanup
-cask cleanup
+tap 'caskroom/cask'
+tap 'homebrew/apache'
+tap 'homebrew/brewdler'
+tap 'homebrew/dupes'
+tap 'homebrew/versions'
+tap 'josegonzalez/php', 'git@github.com:josegonzalez/homebrew-php.git'
+tap 'peco/peco'
+brew 'apr'
+brew 'pkg-config'
+brew 'makedepend'
+brew 'openssl'
+brew 'readline'
+brew 'postgresql'
+brew 'apr-util'
+brew 'autoconf'
+brew 'xz'
+brew 'automake'
+brew 'pcre'
+brew 'gettext'
+brew 'git'
+brew 'go'
+brew 'docker'
+brew 'boot2docker'
+brew 'ghc'
+brew 'cabal-install'
+brew 'cmake'
+brew 'cpanminus'
+brew 'cscope'
+brew 'fish'
+brew 'libpng'
+brew 'freetype'
+brew 'gdbm'
+brew 'gmp'
+brew 'icu4c'
+brew 'libtool'
+brew 'jpeg'
+brew 'libtiff'
+brew 'imagemagick'
+brew 'libevent'
+brew 'libgpg-error'
+brew 'libksba'
+brew 'libxml2'
+brew 'libxslt'
+brew 'libyaml'
+brew 'lua'
+brew 'macvim', args: ['with-override-system-vim']
+brew 'mercurial'
+brew 'mysql'
+brew 'neo4j'
+brew 'node'
+brew 'ossp-uuid'
+brew 'peco'
+brew 'perl-build'
+brew 'plenv'
+brew 'pyenv'
+brew 'pyenv-virtualenv'
+brew 'ruby-build', args: ['HEAD']
+brew 'rbenv'
+brew 'redis'
+brew 'rmtrash'
+brew 'terminal-notifier'
+brew 'tmux'
+brew 'unixodbc'
+brew 'wget'
+brew 'zsh'
+brew 'caskroom/cask/brew-cask'
+brew 'homebrew/dupes/zlib'
+brew 'homebrew/apache/httpd24'
+brew 'homebrew/dupes/libiconv'
+brew 'homebrew/versions/gmp4'
+brew 'homebrew/versions/ppl011'
+brew 'homebrew/versions/cloog-ppl015'
+brew 'homebrew/versions/isl011'
+brew 'homebrew/versions/cloog018'
+brew 'homebrew/versions/mpfr2'
+brew 'homebrew/versions/libmpc08'
+brew 'homebrew/versions/gcc49'
+brew 'homebrew/versions/mysql55'
+cask 'iterm2'
+cask 'selfcontrol'
