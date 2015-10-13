@@ -7,7 +7,7 @@ plugins=(git)
 if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 
 # refresh
-alias refresh="source dotfile/.zshrc"
+alias refresh="source dotfiles/home/zshrc"
 
 # Brew command
 alias brew="env PATH=${PATH/\/Users\/Jinda\/\.pyenv\/shims:?/} brew"
@@ -60,7 +60,6 @@ alias grep='grep --color=auto'
 alias b='bundle'
 alias be='bundle exec'
 
-source ~/.mysqlenv/etc/bashrc
 if which pyenv > /dev/null; then
   export PYENV_ROOT="${HOME}/.pyenv"
   export PATH=${PYENV_ROOT}/shims:${PATH}
@@ -73,9 +72,7 @@ if which plenv > /dev/null; then
 fi
 
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
-export PATH="$HOME/.phpenv/bin:$PATH"
 export PATH="/usr/local/share/npm/bin:$PATH"
-eval "$(phpenv init -)"
 
 export PATH=$PATH:~/npm/bin 
 export NODE_PATH=$NODE_PATH:~/npm/lib/node_modules
