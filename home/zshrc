@@ -52,6 +52,7 @@ alias grh='git reset HEAD'
 alias gf='git fetch'
 
 # Unix
+alias ..='cd ..'
 alias t='tmux'
 alias grep='grep --color=auto'
 
