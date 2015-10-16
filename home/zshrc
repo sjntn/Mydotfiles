@@ -59,6 +59,7 @@ alias grep='grep --color=auto'
 # Ruby
 alias b='bundle'
 alias be='bundle exec'
+alias bu='bundle update'
 
 if which pyenv > /dev/null; then
   export PYENV_ROOT="${HOME}/.pyenv"
@@ -69,6 +70,11 @@ if which plenv > /dev/null; then
   export PLENV_ROOT="${HOME}/.plenv"
   export PATH=${PLENV_ROOT}/shims:${PATH}
   eval "$(plenv init -)";
+fi
+if which mysqlenv > /dev/null; then
+  export MYSQLENV_ROOT="${HOME}/.mysqlenv"
+  export PATH=${MYSQLENV_ROOT}/shims:${PATH}
+  eval "$(mysqlenv init -)";
 fi
 
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
