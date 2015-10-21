@@ -25,8 +25,8 @@ alias skype='open -a Skype'
 alias gyazo='open -a Gyazo'
 alias skitch='open -a Skitch'
 alias hipchat='open -a Hipchat'
-alias photoshop='open -a Adobe\ Photoshop\ CC\ 2014'
-alias illustrator='open -a Adobe\ Illustrator\ CC\ 2014'
+alias photoshop='open -a Adobe\ Photoshop\ CC\ 2015'
+alias illustrator='open -a Adobe\ Illustrator\ CC\ 2015'
 alias notes='open -a notes'
 alias wunderlist='open -a Wunderlist'
 alias xcode='open -a Xcode'
@@ -85,4 +85,3 @@ export NODE_PATH=$NODE_PATH:~/npm/lib/node_modules
 export PATH=/usr/local/share/npm/bin:$PATH
 export PATH=$HOME/.nodebrew/current/bin:$PATH
 export NODE_PATH=$NODE_PATH::/Users/Jinda/npm/lib/node_modules:/Users/Jinda/npm/lib/node_modules:/Users/Jinda/npm/lib/node_modules
-
