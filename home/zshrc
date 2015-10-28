@@ -85,8 +85,8 @@ function github-push-url() {
   git remote -v | grep '(push)' | awk '{print $2}' | sed -e "s/^[a-z]*@\([a-z0-9\.]*\):/https:\/\/\1\//g" | sed 's/\.git$//g'
 }
 
-alias gp='git push'
-alias gpf='github-push -f'
+alias gps='git push'
+alias gpsf='github-push -f'
 
 # Unix
 alias ..='cd ..'
