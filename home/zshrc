@@ -51,6 +51,43 @@ alias ga='git add'
 alias grh='git reset HEAD'
 alias gf='git fetch'
 
+# git push
+function github-push() {
+  local repository=origin
+  while true; do
+    if [ "$1" = -f ]; then
+      local f_option=$1; shift
+    elif [ "$1" = --repo ]; then
+      repository=$2; shift 2
+    else break; fi
+  done
+
+  local branch=${1:-$(git rev-parse --abbrev-ref HEAD)}
+  local parent_branch=${2:-master}
+
+  git push $f_option $repository $branch \
+  && github-urls $branch $parent_branch
+}
+
+function github-urls() {
+  local src_branch=${1:-$(git rev-parse --abbrev-ref HEAD)}
+  local dst_branch=${2:-master}
+  local url=$(github-push-url)
+
+  echo "$url "
+  echo "$url/tree/$src_branch "
+  if [ $src_branch != $dst_branch ]; then
+    echo "$url/compare/${dst_branch}...${src_branch} "
+  fi
+}
+
+function github-push-url() {
+  git remote -v | grep '(push)' | awk '{print $2}' | sed -e "s/^[a-z]*@\([a-z0-9\.]*\):/https:\/\/\1\//g" | sed 's/\.git$//g'
+}
+
+alias gp='git push'
+alias gpf='github-push -f'
+
 # Unix
 alias ..='cd ..'
 alias t='tmux'
@@ -80,7 +117,7 @@ fi
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 export PATH="/usr/local/share/npm/bin:$PATH"
 
-export PATH=$PATH:~/npm/bin 
+export PATH=$PATH:~/npm/bin
 export NODE_PATH=$NODE_PATH:~/npm/lib/node_modules
 export PATH=/usr/local/share/npm/bin:$PATH
 export PATH=$HOME/.nodebrew/current/bin:$PATH
