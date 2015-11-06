@@ -35,19 +35,23 @@ alias xcode='open -a Xcode'
 alias rm="rmtrash"
 
 # Git
-alias ggpush='git push origin $(current_branch)'
 alias gpl='git pull origin $(current_branch)'
 alias gst='git status'
 alias gd='git diff'
 alias gdn='git diff --name-only'
+alias gdん='git diff --name-only'
 alias gb='git branch'
 alias gl="git log"
 alias gba='git branch -a'
+alias gば='git branch -a'
 alias gcm='git commit -m'
-alias gca='git commit --amend'
+alias gcam='git commit --amend -m'
 alias gco='git checkout'
+alias gcお='git checkout'
 alias gcom='git checkout master'
+alias gcおm='git checkout master'
 alias ga='git add'
+alias が='git add'
 alias grh='git reset HEAD'
 alias gf='git fetch'
 
@@ -96,7 +100,11 @@ alias grep='grep --color=auto'
 # Ruby
 alias b='bundle'
 alias be='bundle exec'
+alias べ='bundle exec'
+alias bi='bundle install'
+alias び='bundle install'
 alias bu='bundle update'
+alias ぶ='bundle update'
 
 if which pyenv > /dev/null; then
   export PYENV_ROOT="${HOME}/.pyenv"
