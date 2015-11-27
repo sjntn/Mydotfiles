@@ -43,7 +43,6 @@ brew 'libxml2'
 brew 'libxslt'
 brew 'libyaml'
 brew 'lua'
-brew 'macvim', args: ['with-override-system-vim']
 brew 'mercurial'
 brew 'mysql'
 brew 'neo4j'
