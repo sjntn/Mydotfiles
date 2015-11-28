@@ -1,6 +1,6 @@
 # Install
 ```
-./install.sh
+sh ./install.sh
 ```
 
 # HomeBrew
