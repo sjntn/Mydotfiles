@@ -17,3 +17,13 @@ which brew > /dev/null
 if [ "$?" -ne 0 ]; then
   ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 fi
+
+# Install vim color scheme
+mkdir -p ~/.vim/colors/
+cp ./vim_color/railscasts.vim ~/.vim/colors/
+ 
+# Install NeoBundle
+if [ ! -d $HOME/.vim/bundle/neobundle.vim ]
+then
+  curl https://raw.githubusercontent.com/Shougo/neobundle.vim/master/bin/install.sh | sh
+fi
