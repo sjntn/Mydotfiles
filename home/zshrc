@@ -89,7 +89,7 @@ function github-push-url() {
 }
 
 alias gps='git push'
-alias gpsf='github-push -f'
+alias gpsf='git push -f'
 
 # Unix
 alias ..='cd ..'
