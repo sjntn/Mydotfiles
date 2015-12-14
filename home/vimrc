@@ -24,7 +24,7 @@ set smartcase
 set nostartofline
 set ruler
 set laststatus=2
-set transparency=15
+set transparency=25
 set confirm
 set visualbell
 set t_vb=
