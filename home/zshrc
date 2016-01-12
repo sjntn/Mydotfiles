@@ -29,6 +29,7 @@ alias illustrator='open -a Adobe\ Illustrator\ CC\ 2015'
 alias notes='open -a notes'
 alias wunderlist='open -a Wunderlist'
 alias xcode='open -a Xcode'
+alias tweetdeck='open -a TweetDeck'
 
 # move file to trash
 alias rm="rmtrash"
