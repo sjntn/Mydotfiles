@@ -6,6 +6,12 @@ plugins=(git)
 
 if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 
+# move dirs without cd
+setopt AUTO_CD
+
+# move between dirs
+cdpath=(.. ~ ~/src)
+
 # refresh
 alias refresh="source dotfiles/home/zshrc"
 
