@@ -1,0 +1,27 @@
+[user]
+	name = Shoya Jinda
+	email = s.jinda0619@gmail.com
+[github]
+  user = sjntn
+[core]
+	editor = /usr/bin/vim
+	excludesfile = ~/.gitignore
+[push]
+	default = simple
+[alias]
+  b = branch
+	p = pull origin $(current_branch)
+	d = diff
+  s = status -bs
+	f = fetch
+	co = checkout
+	ca = commit --amend
+	a = add
+	l = log --decorate
+	lp = log --decorate --stat --patch
+	ls = ls-files
+	g = grep --line-number --show-function --color --heading --break
+	rom = rebase origin/master
+	tb = git-tb
+	bk = git-bk
+	lom = "!sh -c 'git log --decorate --stat --patch --reverse $(git merge-base --fork-point origin/master)..HEAD'"
