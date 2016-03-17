@@ -14,6 +14,7 @@ set expandtab
 set list
 set number
 set showmatch
+set matchtime=1
 set smartindent
 set hidden
 set wildmenu
@@ -24,7 +25,6 @@ set smartcase
 set nostartofline
 set ruler
 set laststatus=2
-set transparency=25
 set confirm
 set visualbell
 set t_vb=
@@ -45,6 +45,8 @@ set tabstop=4
 " 全角スペースを視覚化
 highlight ZenkakuSpace cterm=underline ctermfg=lightblue guibg=white
 match ZenkakuSpace /　/
+" noundofile
+set noundofile
 
 " スペースもマッピングされるためコメントは横に記述しません。
 " nmap ノーマルモードのキーマップ
@@ -65,6 +67,9 @@ set stl+=%-14.(%l,%c%V%)\ %P
 
 " scroll offset
 set scrolloff=10
+
+" http://itchyny.hatenablog.com/entry/2014/12/25/090000
+set display=lastline
 
 " jump to same indent line
 "nn <C-k> :call search ("^". matchstr (getline (line (".")+ 1), '\(\s*\)') ."\\S", 'b')<CR>^
@@ -106,10 +111,6 @@ endfunction "}}}
 let &tabline = '%!'. s:SID_PREFIX() . 'my_tabline()'
 set showtabline=2
 
-" <C-t>: Tab pages
-"nnoremap <silent><expr> <C-t>
-"      \ ":\<C-u>Unite -select=".(tabpagenr()-1)." tab\<CR>"
-
 " t: tags-and-searches "{{{
 " The prefix key.
 nnoremap    [Tag]   <Nop>
@@ -121,46 +122,49 @@ endfor
 "}}}
 
 map <silent> [Tag]c :tablast <bar> tabnew<CR>
-map <silent> [Tag]x :tabclose<CR>
+map <silent> [Tag]x :q<CR>
 map <silent> [Tag]n :tabnext<CR>
 map <silent> [Tag]p :tabprevious<CR>
 
-" crusorline
-augroup vimrc-auto-cursorline
-  autocmd!
-  autocmd CursorMoved,CursorMovedI * call s:auto_cursorline('CursorMoved')
-  autocmd CursorHold,CursorHoldI * call s:auto_cursorline('CursorHold')
-  autocmd WinEnter * call s:auto_cursorline('WinEnter')
-  autocmd WinLeave * call s:auto_cursorline('WinLeave')
+" for non GVim
+if !has('gui_running')
+  " crusorline
+  augroup vimrc-auto-cursorline
+    autocmd!
+    autocmd CursorMoved,CursorMovedI * call s:auto_cursorline('CursorMoved')
+    autocmd CursorHold,CursorHoldI * call s:auto_cursorline('CursorHold')
+    autocmd WinEnter * call s:auto_cursorline('WinEnter')
+    autocmd WinLeave * call s:auto_cursorline('WinLeave')
 
-  let s:cursorline_lock = 0
-  function! s:auto_cursorline(event)
-    if a:event ==# 'WinEnter'
-      setlocal cursorline
-      let s:cursorline_lock = 2
-    elseif a:event ==# 'WinLeave'
-      setlocal nocursorline
-    elseif a:event ==# 'CursorMoved'
-      if s:cursorline_lock
-        if 1 < s:cursorline_lock
-          let s:cursorline_lock = 1
-        else
-          setlocal nocursorline
-          let s:cursorline_lock = 0
+    let s:cursorline_lock = 0
+    function! s:auto_cursorline(event)
+      if a:event ==# 'WinEnter'
+        setlocal cursorline
+        let s:cursorline_lock = 2
+      elseif a:event ==# 'WinLeave'
+        setlocal nocursorline
+      elseif a:event ==# 'CursorMoved'
+        if s:cursorline_lock
+          if 1 < s:cursorline_lock
+            let s:cursorline_lock = 1
+          else
+            setlocal nocursorline
+            let s:cursorline_lock = 0
+          endif
         endif
+      elseif a:event ==# 'CursorHold'
+        setlocal cursorline
+        let s:cursorline_lock = 1
       endif
-    elseif a:event ==# 'CursorHold'
-      setlocal cursorline
-      let s:cursorline_lock = 1
-    endif
-  endfunction
-augroup END
+    endfunction
+  augroup END
+endif
 
 " easy escape
-inoremap jj <ESC>
-onoremap jj <ESC>
-inoremap j<Space> j
-onoremap j<Space> j
+"inoremap jj <ESC>
+"onoremap jj <ESC>
+"inoremap j<Space> j
+"onoremap j<Space> j
 
 " a>, i], etc... "{{{
 " <angle>
@@ -248,7 +252,8 @@ nnoremap <silent> [Space]en
 nnoremap [Space]sp
       \ :<C-u>call ToggleOption('spell')<CR>
 nnoremap [Space]w
-      \ :<C-u>call ToggleOption('wrap')<CR>
+      \ :<C-u>update<CR>
+"      \ :<C-u>call ToggleOption('wrap')<CR>
 " Echo syntax name.
 nnoremap [Space]sy
       \ :<C-u>echo synIDattr(synID(line('.'), col('.'), 1), "name")<CR>
@@ -266,7 +271,7 @@ nnoremap <silent> [Space]rg
       \ echo "source $MYGVIMRC"<CR>
 "}}}
 " Easily syntax change.
-nnoremap <silent> [Space]ft :<C-u>Unite -start-insert filetype<CR>
+"nnoremap <silent> [Space]ft :<C-u>Unite -start-insert filetype<CR>
 " for folding
 noremap [Space]j zj
 noremap [Space]k zk
@@ -295,56 +300,55 @@ function! ToggleVariable(variable_name)
   echo printf('%s = %s', a:variable_name, eval(a:variable_name))
 endfunction  "}}}
 
+" 戦闘力
+function! Scouter(file, ...)
+  let pat = '^\s*$\|^\s*"'
+  let lines = readfile(a:file)
+  if !a:0 || !a:1
+    let lines = split(substitute(join(lines, "\n"), '\n\s*\\', '', 'g'), "\n")
+  endif
+  return len(filter(lines,'v:val !~ pat'))
+endfunction
+command! -bar -bang -nargs=? -complete=file Scouter
+\        echo Scouter(empty(<q-args>) ? $MYVIMRC : expand(<q-args>), <bang>0)
+
 "set re=1
 
 filetype off
 
 if has('vim_starting')
-  set runtimepath+=~/.vim/bundle/neobundle.vim/
+  set runtimepath+=~/.bundle/neobundle.vim/
 endif
-call neobundle#rc(expand('~/.vim/bundle'))
 
+call neobundle#begin(expand('~/.bundle/'))
 " Let NeoBundle manage NeoBundle
 NeoBundleFetch 'Shougo/neobundle.vim'
+call neobundle#end()
 
 NeoBundle 'tpope/vim-rails.git'
-NeoBundleLazy 'ZenCoding.vim', 'abdc4cf2062e546dab80ea53d2feb4118d00c5d8', { 'autoload' : {
-    \ 'filetypes' : ['eruby', 'scss', 'css', 'html', 'scss.css']
+NeoBundleLazy 'mattn/emmet-vim', { 'autoload' : {
+    \ 'filetypes' : ['eruby', 'scss', 'css', 'html', 'scss.css', 'jst', 'eco']
     \ }}
+let g:user_emmet_leader_key='<C-S>'
+
 
 NeoBundle 'EnhCommentify.vim'
-NeoBundle 'Shougo/neocomplcache'
-let g:neocomplcache_enable_at_startup = 1
-"inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<TAB>"
-autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-"Enable heavy omni completion.
-"if !exists('g:neocomplcache_omni_patterns')
-"    let g:neocomplcache_omni_patterns = {}
-"endif
-"let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\w*\|\h\w*::'
-let g:neocomplcache_enable_smart_case = 0
-let g:neocomplcache_enable_underbar_completion = 0
-let g:neocomplcache_enable_camel_case_completion = 0
-"scssでcssの補完を有効にする
-if !exists('g:neocomplcache_omni_patterns')
-    let g:neocomplcache_omni_patterns = {}
-endif
-let g:neocomplcache_omni_patterns.scss = '^\s\+\w\+\|\w\+[):;]\?\s\+\|[@!]'
 
-NeoBundle 'scrooloose/nerdtree'
-NeoBundle 'sudo.vim'
+
+"NeoBundle 'scrooloose/nerdtree'
+"NeoBundle 'sudo.vim'
 NeoBundle 'surround.vim'
-"NeoBundleLazy 'vim-ruby/vim-ruby', { 'autoload' : {
-"    \ 'filetypes' : 'ruby'
-"    \ }}
-let ruby_space_errors=1
+"NeoBundle 'vim-ruby/vim-ruby'
+"let ruby_space_errors=1
+"let g:ruby_indent_access_modifier_style="indent"
+
 NeoBundleLazy 'wadako111/vim-coffee-script', { 'autoload' : {
     \ 'filetypes' : ['coffee', 'eco']
     \ }}
 
+" endを自動入力
 NeoBundle 'tpope/vim-endwise.git'
-"NeoBundle 'mru.vim'
+
 NeoBundle 'othree/html5.vim'
 NeoBundleLazy 'pangloss/vim-javascript', { 'autoload' : {
     \ 'filetypes' : 'javascript'
@@ -357,22 +361,25 @@ NeoBundleLazy 'pangloss/vim-javascript', { 'autoload' : {
 "let g:indent_guides_enable_on_vim_startup = 1
 set ts=2 sw=2 et
 NeoBundleLazy 'briancollins/vim-jst.git', { 'autoload': {
-    \ 'filetypes' : 'eco'
+    \ 'filetypes' : ['eco', 'jst']
     \ }}
 NeoBundle 'wadako111/say.vim'
+
+" unite.vim
 NeoBundle 'Shougo/unite.vim'
 let g:unite_enable_start_insert = 1
 let g:unite_enable_split_vertically = 0
 let g:unite_winwidth = 40
+let g:unite_source_file_mru_long_limit = 100
 call unite#custom_source('file_rec', 'ignore_pattern', 'vendor/\|tmp/\|log/')
 call unite#custom_source('file_rec/async', 'ignore_pattern', 'vendor/\|tmp/\|log/')
 " バッファ一覧
 nnoremap <silent> ,ub :<C-u>Unite buffer<CR>
 " ファイル一覧
-nnoremap <silent> ,uf :<C-u>UniteWithBufferDir -buffer-name=files file<CR>
+nnoremap <silent> ,uf :<C-u>UniteWithBufferDir -buffer-name=files file file/new<CR>
 nnoremap <silent> ,ut :<C-u>Unite -buffer-name=files buffer file_mru file_rec/async file/new  <CR>
 nnoremap <silent> ,um :<C-u>Unite  file_mru <CR>
-nnoremap <silent> ,ug :<C-u>Unite grep:%:-iHRn<CR>
+nnoremap <silent> ,ug :<C-u>Unite grep/git:. -no-quit<CR>
 nnoremap <silent> ,urc :<C-u>Unite file_rec/async:app/controllers/ -input=!admin<CR><Space>
 nnoremap <silent> ,urfc :<C-u>Unite file file/new -input=app/controllers/ <CR>
 nnoremap <silent> ,urm :<C-u>Unite file_rec/async:app/models/ -input=!admin <CR><Space>
@@ -389,13 +396,69 @@ nnoremap <silent> ,url :<C-u>Unite file_rec/async:lib/ <CR>
 nnoremap <silent> ,urfl :<C-u>Unite file file/new -input=lib/ <CR>
 nnoremap <silent> ,urr :<C-u>Unite file_rec/async:spec/ <CR>
 nnoremap <silent> ,urfr :<C-u>Unite file file/new -input=spec/ <CR>
-NeoBundle 'h1mesuke/unite-outline'
+nnoremap <silent> ,urt :<C-u>Unite file_rec/async:app/tasks/ <CR>
+nnoremap <silent> ,urft :<C-u>Unite file file/new -input=app/tasks/ <CR>
+nnoremap <silent> ,ura :<C-u>Unite file_rec/async:app/apis/ <CR>
+nnoremap <silent> ,urfa :<C-u>Unite file file/new -input=app/apis/ <CR>
+nnoremap <silent> ,uru :<C-u>Unite file_rec/async:app/utils/ <CR>
+nnoremap <silent> ,urfu :<C-u>Unite file file/new -input=app/utils/ <CR>
+nnoremap <silent> ,urh :<C-u>Unite file_rec/async:chef/ <CR>
+nnoremap <silent> ,urfh :<C-u>Unite file file/new -input=chef/ <CR>
+autocmd FileType unite call s:unite_my_settings()
+function! s:unite_my_settings()
+  imap <buffer> <C-y>     <Plug>(unite_narrowing_path)
+  nmap <buffer> <C-y>     <Plug>(unite_narrowing_path)
+  nmap <buffer> <C-r>     <Plug>(unite_narrowing_input_history)
+  imap <buffer> <C-r>     <Plug>(unite_narrowing_input_history)
+endfunction
+
+"NeoBundle 'h1mesuke/unite-outline'
+
+"NeoBundle 'Shougo/vimfiler'
+
+" Most Recently Used files
+NeoBundle "Shougo/neomru.vim"
+
+" uniteでgit grep
+" http://lambdalisue.hatenablog.com/entry/2014/11/06/055838
+NeoBundleLazy 'lambdalisue/unite-grep-vcs', {
+    \ 'autoload': {
+    \    'unite_sources': ['grep/git', 'grep/hg'],
+    \}}
+
+NeoBundleLazy 'osyo-manga/unite-filetype', { 'autoload' : {
+      \ 'unite_sources' : 'filetype',
+      \ }}
+
+" jazzradio
+NeoBundleLazy 'supermomonga/jazzradio.vim', { 'depends' : [ 'Shougo/unite.vim' ] }
+if neobundle#tap('jazzradio.vim')
+  call neobundle#config({
+        \   'autoload' : {
+        \     'unite_sources' : [
+        \       'jazzradio'
+        \     ],
+        \     'commands' : [
+        \       'JazzradioUpdateChannels',
+        \       'JazzradioStop',
+        \       {
+        \         'name' : 'JazzradioPlay',
+        \         'complete' : 'customlist,jazzradio#channel_id_complete'
+        \       }
+        \     ],
+        \     'function_prefix' : 'jazzradio'
+        \   }
+        \ })
+endif
+
+
+"""""""""""""""" unite.vim """""""""""""""""""
 
 NeoBundle 'tpope/vim-fugitive'
 
-NeoBundle 'Shougo/vimshell'
-let g:vimshell_prompt_expr = 'getcwd()." > "'
-let g:vimshell_prompt_pattern = '^\f\+ > '
+"NeoBundle 'Shougo/vimshell'
+"let g:vimshell_prompt_expr = 'getcwd()." > "'
+"let g:vimshell_prompt_pattern = '^\f\+ > '
 NeoBundle 'Shougo/vimproc', {
   \ 'build' : {
     \ 'windows' : 'make -f make_mingw32.mak',
@@ -405,21 +468,12 @@ NeoBundle 'Shougo/vimproc', {
   \ },
 \ }
 
-NeoBundle 'Lokaltog/powerline', { 'rtp' : 'powerline/bindings/vim'}
-" rsense in neocomplcache
-"let g:neocomplcache#sources#rsense#home_directory = '/home/wadako/rsense-0.3'
-"NeoBundle 'Shougo/neocomplcache-rsense', {
-"            \ 'depends' : 'Shougo/neocomplcache',
-"            \ 'autoload' : { 'filetypes' : 'ruby' }
-"          \ }
-"let g:rsenseUseOmniFunc = 1
-NeoBundle 'yanktmp.vim'
-map <silent> sy :call YanktmpYank()<CR>
-map <silent> sp :call YanktmpPaste_p()<CR>
-map <silent> sP :call YanktmpPaste_P()<CR>
+NeoBundle 'bling/vim-airline'
+let g:airline_powerline_fonts = 1
+" powerlineはタブラインにまで影響をおよぼすので使わない
+"NeoBundle 'Lokaltog/powerline', { 'rtp' : 'powerline/bindings/vim'}
 
-NeoBundle 'yuratomo/w3m.vim'
-"NeoBundle "basyura/unite-rails"
+"NeoBundle 'yuratomo/w3m.vim'
 
 "NeoBundleLazy 'cakebaker/scss-syntax.vim', {'autoload' : {'filetypes' : ['scss', 'scss.css'] }}
 
@@ -443,6 +497,7 @@ NeoBundle "kana/vim-textobj-indent"
 
 let g:neosnippet#snippets_directory='~/vim_snippets'
 NeoBundle 'Shougo/neosnippet'
+NeoBundle "Shougo/neosnippet-snippets"
 " <TAB>: completion.
 " inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 inoremap <expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<S-TAB>"
@@ -457,15 +512,14 @@ smap <expr><TAB> neosnippet#jumpable() ? "\<Plug>(neosnippet_expand_or_jump)" : 
 if has('conceal')
   set conceallevel=2 concealcursor=i
 endif
-inoremap <expr><C-e> neocomplcache#cancel_popup()
-inoremap <expr><C-y> neocomplcache#close_popup()
-imap <silent><C-S>     <Plug>(neosnippet_start_unite_snippet)
+"imap <silent><C-S>     <Plug>(neosnippet_start_unite_snippet)
 
 " twitter
-NeoBundle 'tyru/open-browser.vim'
-NeoBundle 'basyura/twibill.vim'
-NeoBundle 'basyura/TweetVim'
-nnoremap <leader>s :TweetVimCommandSay<CR>
+"NeoBundle 'tyru/open-browser.vim'
+"NeoBundle 'basyura/twibill.vim'
+"NeoBundle 'basyura/TweetVim'
+"nnoremap <leader>s :TweetVimCommandSay<CR>
+
 NeoBundle 'mattn/webapi-vim'
 NeoBundle 'mattn/livestyle-vim'
 " color scheme
@@ -497,26 +551,23 @@ if neobundle#is_installed('accelerated-jk')
 endif
 let g:accelerated_jk_acceleration_limit = 300
 
-NeoBundleLazy 'osyo-manga/unite-filetype', { 'autoload' : {
-      \ 'unite_sources' : 'filetype',
-      \ }}
-NeoBundle 'mattn/gist-vim'
+"NeoBundle 'mattn/gist-vim'
 
 NeoBundle 'scrooloose/syntastic'
 
 NeoBundle 'LeafCage/foldCC'
 set foldmethod=indent
 set foldlevel=1
-set foldnestmax=2
+"set foldnestmax=2
 set foldtext=FoldCCtext()
 hi Folded gui=bold term=standout ctermbg=233 ctermfg=244
 hi FoldColumn gui=bold term=standout ctermbg=LightGrey ctermfg=DarkBlue
 
-NeoBundle 'SingleCompile'
-NeoBundleLazy 'thinca/vim-quickrun', { 'autoload' : {
-      \ 'mappings' : [
-      \   ['nxo', '<Plug>(quickrun)']],
-      \ }}
+"NeoBundle 'SingleCompile'
+"NeoBundleLazy 'thinca/vim-quickrun', { 'autoload' : {
+"      \ 'mappings' : [
+"      \   ['nxo', '<Plug>(quickrun)']],
+"      \ }}
 nmap <silent> <Leader>r <Plug>(quickrun)
 let g:quickrun_config = {
   \ "_" : {
@@ -530,31 +581,81 @@ let g:quickrun_config = {
   \ }
 
 " for ios app
-"NeoBundleLazy 'tokorom/clang_complete',
-"      \ {'autoload': {'filetypes': ['c', 'cpp', 'objc']}}
-"NeoBundleLazy 'tokorom/clang_complete-getopts-ios.git',
-"      \ {'autoload': {'filetypes': ['objc']}}
+NeoBundleLazy 'tokorom/clang_complete',
+      \ {'autoload': {'filetypes': ['c', 'cpp', 'objc']}}
+NeoBundleLazy 'tokorom/clang_complete-getopts-ios.git',
+      \ {'autoload': {'filetypes': ['objc']}}
 NeoBundleLazy 'tokorom/cocoa.vim.git', 'syntax-only',
       \ {'autoload': {'filetypes': ['objc']}}
 NeoBundle 'kana/vim-altr'
-"if !exists('g:neocomplcache_force_omni_patterns')
-"  let g:neocomplcache_force_omni_patterns = {}
-"endif
-"let g:neocomplcache_force_overwrite_completefunc = 1
-"let g:neocomplcache_force_omni_patterns.c =
-"      \ '[^.[:digit:] *\t]\%(\.\|->\)'
-"let g:neocomplcache_force_omni_patterns.cpp =
-"      \ '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
-"let g:neocomplcache_force_omni_patterns.objc =
-"      \ '[^.[:digit:] *\t]\%(\.\|->\)'
-"let g:neocomplcache_force_omni_patterns.objcpp =
-"      \ '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
-"let g:clang_complete_auto = 0
-"let g:clang_auto_select = 0
-"let g:clang_auto_user_options = 'path, .clang_complete, ios'
-"let g:clang_complete_getopts_ios_sdk_directory = '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.0.sdk'
+
+let g:clang_complete_auto = 0
+let g:clang_auto_select = 0
+let g:clang_auto_user_options = 'path, .clang_complete, ios'
+let g:clang_complete_getopts_ios_sdk_directory = '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.0.sdk'
 "let g:clang_use_library = 0
-"let g:clang_library_path = '/Library/Developer/CommandLineTools/usr/lib'
+let g:clang_library_path = '/Library/Developer/CommandLineTools/usr/lib'
+
+NeoBundle 't9md/vim-quickhl'
+"NeoBundle 'tyru/restart.vim'
+"NeoBundle 'itchyny/calendar.vim'
+"let g:calendar_google_calendar = 1
+"let g:calendar_locale = "ja"
+"let g:calendar_first_day = "monday"
+
+NeoBundle 'thinca/vim-qfreplace'
+NeoBundle 'chriskempson/vim-tomorrow-theme'
+NeoBundle 'tpope/vim-repeat'
+
+
+" neocomplete or neocomplcache
+" neocompleteが使えるかどうか判定
+function! s:meet_neocomplete_requirements()
+    return has('lua') && (v:version > 703 || (v:version == 703 && has('patch885')))
+endfunction
+
+if s:meet_neocomplete_requirements()
+  NeoBundle 'Shougo/neocomplete.vim'
+  NeoBundleFetch 'Shougo/neocomplcache.vim'
+else
+  NeoBundleFetch 'Shougo/neocomplete.vim'
+  NeoBundle 'Shougo/neocomplcache.vim'
+endif
+
+
+if s:meet_neocomplete_requirements()
+  " neocomplete の設定
+  let g:neocomplete#enable_at_startup = 1
+  let g:neocomplete#enable_smart_case = 1
+  let g:neocomplete#enable_ignore_case = 1
+  " <C-e>: close popup.
+  inoremap <expr><C-e>  pumvisible() ? neocomplete#cancel_popup() : "\<End>"
+else
+  " neocomplcache の設定
+  let g:neocomplcache_enable_at_startup = 1
+  "  autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+  "  autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+  "scssでcssの補完を有効にする
+  if !exists('g:neocomplcache_omni_patterns')
+    let g:neocomplcache_omni_patterns = {}
+  endif
+  let g:neocomplcache_omni_patterns.scss = '^\s\+\w\+\|\w\+[):;]\?\s\+\|[@!]'
+  inoremap <expr><C-e> neocomplcache#cancel_popup()
+  inoremap <expr><C-y> neocomplcache#close_popup()
+endif
+
+" php
+NeoBundle "StanAngeloff/php.vim"
+let php_sql_query = 1
+let php_baselib = 1
+let php_htmlInStrings = 1
+let php_noShortTags = 1
+let php_parent_error_close = 1
+
+if has('gui_running')
+"  NeoBundle 'todesking/ruby_hl_lvar.vim'
+endif
+
 
 filetype plugin indent on
 filetype on

@@ -37,29 +37,14 @@ alias wunderlist='open -a Wunderlist'
 alias xcode='open -a Xcode'
 alias tweetdeck='open -a TweetDeck'
 
+# weather
+alias wtokyo="curl -4 wttr.in/tokyo"
+
 # move file to trash
 alias rm="rmtrash"
 
 # Git
-alias gpl='git pull origin $(current_branch)'
-alias gst='git status'
-alias gd='git diff'
-alias gdn='git diff --name-only'
-alias gdん='git diff --name-only'
-alias gb='git branch'
-alias gl="git log"
-alias gba='git branch -a'
-alias gば='git branch -a'
-alias gcm='git commit -m'
-alias gcam='git commit --amend -m'
-alias gco='git checkout'
-alias gcお='git checkout'
-alias gcom='git checkout master'
-alias gcおm='git checkout master'
-alias ga='git add'
-alias が='git add'
-alias grh='git reset HEAD'
-alias gf='git fetch'
+alias g='git'
 
 # git push
 function github-push() {
@@ -131,8 +116,14 @@ fi
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 export PATH="/usr/local/share/npm/bin:$PATH"
 
+# for golang
+export GOVERSION=1.6
+export GOPATH=$HOME/.go/$GOVERSION
+export PATH=$GOPATH/bin:$PATH
+
 export PATH=$PATH:~/npm/bin
 export NODE_PATH=$NODE_PATH:~/npm/lib/node_modules
 export PATH=/usr/local/share/npm/bin:$PATH
 export PATH=$HOME/.nodebrew/current/bin:$PATH
 export NODE_PATH=$NODE_PATH::/Users/Jinda/npm/lib/node_modules:/Users/Jinda/npm/lib/node_modules:/Users/Jinda/npm/lib/node_modules
+export PATH=~/.bin:$PATH
