@@ -1,331 +1,339 @@
-"-------------------------------------------------------------------------------
-" コマンド       ノーマルモード 挿入モード コマンドラインモード ビジュアルモード
-" map/noremap           @            -              -                  @
-" nmap/nnoremap         @            -              -                  -
-" imap/inoremap         -            @              -                  -
-" cmap/cnoremap         -            -              @                  -
-" vmap/vnoremap         -            -              -                  @
-" map!/noremap!         -            @              @                  -
-"---------------------------------------------------------------------------
-syntax on
-set nocompatible
-set autoindent
-set expandtab
-set list
-set number
-set showmatch
-set matchtime=1
-set smartindent
-set hidden
-set wildmenu
-set showcmd
-set hlsearch
-set ignorecase
-set smartcase
-set nostartofline
-set ruler
-set laststatus=2
-set confirm
-set visualbell
-set t_vb=
-set mouse=""
-set cmdheight=2
-set notimeout ttimeout ttimeoutlen=200
-set listchars=tab:»-,trail:-,eol:↲
-set t_Co=256
-set backspace=indent,eol,start
-set autoread
-"set relativenumber
-"set cursorline
-" swapファイルを作成しない
-set noswapfile
-" タブ幅
-set shiftwidth=4
-set tabstop=4
-" 全角スペースを視覚化
-highlight ZenkakuSpace cterm=underline ctermfg=lightblue guibg=white
-match ZenkakuSpace /　/
-" noundofile
-set noundofile
 
-" スペースもマッピングされるためコメントは横に記述しません。
-" nmap ノーマルモードのキーマップ
-" nnoremap ノーマルモードのキーマップ (ただし再帰的にキーマップを追いません)
-" imap インサートモードのキーマップ
-"
-"imap <C-h> <Left>
-"imap <C-l> <Right>
-"nnoremap j gj
-"nnoremap k gk
+" Note: Skip initialization for vim-tiny or vim-small.
+ if 0 | endif
 
-"custom statusline
-"set statusline=%<%f\
-set statusline=%<%f\ %h%m%r%{fugitive#statusline()}
-set stl+=[%{&ff}]             " show fileformat
-set stl+=%y%m%r%=
-set stl+=%-14.(%l,%c%V%)\ %P
+ "-------------------------------------------------------------------------------
+ " コマンド       ノーマルモード 挿入モード コマンドラインモード ビジュアルモード
+ " map/noremap           @            -              -                  @
+ " nmap/nnoremap         @            -              -                  -
+ " imap/inoremap         -            @              -                  -
+ " cmap/cnoremap         -            -              @                  -
+ " vmap/vnoremap         -            -              -                  @
+ " map!/noremap!         -            @              @                  -
+ "---------------------------------------------------------------------------
+ syntax on
+ set nocompatible
+ set autoindent
+ set expandtab
+ set list
+ set number
+ set showmatch
+ set matchtime=1
+ set smartindent
+ set hidden
+ set wildmenu
+ set showcmd
+ set hlsearch
+ set ignorecase
+ set smartcase
+ set nostartofline
+ set ruler
+ set laststatus=2
+ set confirm
+ set visualbell
+ set t_vb=
+ set mouse=""
+ set cmdheight=2
+ set notimeout ttimeout ttimeoutlen=200
+ set listchars=tab:»-,trail:-,eol:↲
+ set t_Co=256
+ set backspace=indent,eol,start
+ set autoread
+ "set relativenumber
+ "set cursorline
+ " swapファイルを作成しない
+ set noswapfile
+ " タブ幅
+ set shiftwidth=4
+ set tabstop=4
+ " 全角スペースを視覚化
+ highlight ZenkakuSpace cterm=underline ctermfg=lightblue guibg=white
+ match ZenkakuSpace /　/
+ " noundofile
+ set noundofile
 
-" scroll offset
-set scrolloff=10
+ " スペースもマッピングされるためコメントは横に記述しません。
+ " nmap ノーマルモードのキーマップ
+ " nnoremap ノーマルモードのキーマップ (ただし再帰的にキーマップを追いません)
+ " imap インサートモードのキーマップ
+ "
+ "imap <C-h> <Left>
+ "imap <C-l> <Right>
+ "nnoremap j gj
+ "nnoremap k gk
 
-" http://itchyny.hatenablog.com/entry/2014/12/25/090000
-set display=lastline
+ "custom statusline
+ "set statusline=%<%f\
+ set statusline=%<%f\ %h%m%r%{fugitive#statusline()}
+ set stl+=[%{&ff}]             " show fileformat
+ set stl+=%y%m%r%=
+ set stl+=%-14.(%l,%c%V%)\ %P
 
-" jump to same indent line
-"nn <C-k> :call search ("^". matchstr (getline (line (".")+ 1), '\(\s*\)') ."\\S", 'b')<CR>^
-"nn <C-j> :call search ("^". matchstr (getline (line (".")), '\(\s*\)') ."\\S")<CR>^
-nnoremap <silent> g{ :call <SID>search_top()<CR>^
-nnoremap <silent> g} :call search ('^\s\{,' . (col('.') - 1). '}\S')<CR>^
-function! s:search_top()
-  let spaces = col('.')
-  execute line(".") - 1
-  call search ('^\s\{,' . (spaces - 1). '}\S', 'b')
-endfunction
+ " scroll offset
+ set scrolloff=10
 
-" Anywhere SID.
-function! s:SID_PREFIX()
-  return matchstr(expand('<sfile>'), '<SNR>\d\+_\zeSID_PREFIX$')
-endfunction
+ " http://itchyny.hatenablog.com/entry/2014/12/25/090000
+ set display=lastline
 
-" Set tabline.
-function! s:my_tabline()  "{{{
-  let s = ''
-  for i in range(1, tabpagenr('$'))
-    let bufnrs = tabpagebuflist(i) " 1 -> 1, 2 -> 8, 3 -> 4 ????
-    let bufnr = bufnrs[tabpagewinnr(i) - 1]  " first window, first appears
-    let no = i  " display 0-origin tabpagenr.
-    let mod = getbufvar(bufnr, '&modified') ? '!' : ' '
-    " Use gettabvar().
-    let title = fnamemodify(bufname(bufnr), ':t')
-    let title = '[' . title . ']'
-    let s .= '%'.i.'T'
-    let s .= '%#' . (i == tabpagenr() ? 'TabLineSel' : 'TabLine') . '#'
-    let s .= no . ':' . title
-    let s .= mod
-    let s .= '%#TabLineFill# '
-  endfor
-  let s .= '%#TabLineFill#%T%=%#TabLine#'
-  return s
-endfunction "}}}
-"let &tabline = '%!'. s:SID_PREFIX() . 'my_tabline()'
-let &tabline = '%!'. s:SID_PREFIX() . 'my_tabline()'
-set showtabline=2
+ " jump to same indent line
+ "nn <C-k> :call search ("^". matchstr (getline (line (".")+ 1), '\(\s*\)') ."\\S", 'b')<CR>^
+ "nn <C-j> :call search ("^". matchstr (getline (line (".")), '\(\s*\)') ."\\S")<CR>^
+ nnoremap <silent> g{ :call <SID>search_top()<CR>^
+ nnoremap <silent> g} :call search ('^\s\{,' . (col('.') - 1). '}\S')<CR>^
+ function! s:search_top()
+   let spaces = col('.')
+   execute line(".") - 1
+   call search ('^\s\{,' . (spaces - 1). '}\S', 'b')
+ endfunction
 
-" t: tags-and-searches "{{{
-" The prefix key.
-nnoremap    [Tag]   <Nop>
-nmap    t [Tag]
-" Tab jump
-for n in range(1, 9)
-  execute 'nnoremap <silent> [Tag]'.n  ':<C-u>tabnext'.n.'<CR>'
-endfor
-"}}}
+ " Anywhere SID.
+ function! s:SID_PREFIX()
+   return matchstr(expand('<sfile>'), '<SNR>\d\+_\zeSID_PREFIX$')
+ endfunction
 
-map <silent> [Tag]c :tablast <bar> tabnew<CR>
-map <silent> [Tag]x :q<CR>
-map <silent> [Tag]n :tabnext<CR>
-map <silent> [Tag]p :tabprevious<CR>
+ " Set tabline.
+ function! s:my_tabline()  "{{{
+   let s = ''
+   for i in range(1, tabpagenr('$'))
+     let bufnrs = tabpagebuflist(i) " 1 -> 1, 2 -> 8, 3 -> 4 ????
+     let bufnr = bufnrs[tabpagewinnr(i) - 1]  " first window, first appears
+     let no = i  " display 0-origin tabpagenr.
+     let mod = getbufvar(bufnr, '&modified') ? '!' : ' '
+     " Use gettabvar().
+     let title = fnamemodify(bufname(bufnr), ':t')
+     let title = '[' . title . ']'
+     let s .= '%'.i.'T'
+     let s .= '%#' . (i == tabpagenr() ? 'TabLineSel' : 'TabLine') . '#'
+     let s .= no . ':' . title
+     let s .= mod
+     let s .= '%#TabLineFill# '
+   endfor
+   let s .= '%#TabLineFill#%T%=%#TabLine#'
+   return s
+ endfunction "}}}
+ "let &tabline = '%!'. s:SID_PREFIX() . 'my_tabline()'
+ let &tabline = '%!'. s:SID_PREFIX() . 'my_tabline()'
+ set showtabline=2
 
-" for non GVim
-if !has('gui_running')
-  " crusorline
-  augroup vimrc-auto-cursorline
-    autocmd!
-    autocmd CursorMoved,CursorMovedI * call s:auto_cursorline('CursorMoved')
-    autocmd CursorHold,CursorHoldI * call s:auto_cursorline('CursorHold')
-    autocmd WinEnter * call s:auto_cursorline('WinEnter')
-    autocmd WinLeave * call s:auto_cursorline('WinLeave')
+ " t: tags-and-searches "{{{
+ " The prefix key.
+ nnoremap    [Tag]   <Nop>
+ nmap    t [Tag]
+ " Tab jump
+ for n in range(1, 9)
+   execute 'nnoremap <silent> [Tag]'.n  ':<C-u>tabnext'.n.'<CR>'
+ endfor
+ "}}}
 
-    let s:cursorline_lock = 0
-    function! s:auto_cursorline(event)
-      if a:event ==# 'WinEnter'
-        setlocal cursorline
-        let s:cursorline_lock = 2
-      elseif a:event ==# 'WinLeave'
-        setlocal nocursorline
-      elseif a:event ==# 'CursorMoved'
-        if s:cursorline_lock
-          if 1 < s:cursorline_lock
-            let s:cursorline_lock = 1
-          else
-            setlocal nocursorline
-            let s:cursorline_lock = 0
-          endif
-        endif
-      elseif a:event ==# 'CursorHold'
-        setlocal cursorline
-        let s:cursorline_lock = 1
-      endif
-    endfunction
-  augroup END
-endif
+ map <silent> [Tag]c :tablast <bar> tabnew<CR>
+ map <silent> [Tag]x :q<CR>
+ map <silent> [Tag]n :tabnext<CR>
+ map <silent> [Tag]p :tabprevious<CR>
 
-" easy escape
-"inoremap jj <ESC>
-"onoremap jj <ESC>
-"inoremap j<Space> j
-"onoremap j<Space> j
+ " for non GVim
+ if !has('gui_running')
+   " crusorline
+   augroup vimrc-auto-cursorline
+     autocmd!
+     autocmd CursorMoved,CursorMovedI * call s:auto_cursorline('CursorMoved')
+     autocmd CursorHold,CursorHoldI * call s:auto_cursorline('CursorHold')
+     autocmd WinEnter * call s:auto_cursorline('WinEnter')
+     autocmd WinLeave * call s:auto_cursorline('WinLeave')
 
-" a>, i], etc... "{{{
-" <angle>
-onoremap aa  a>
-xnoremap aa  a>
-onoremap ia  i>
-xnoremap ia  i>
+     let s:cursorline_lock = 0
+     function! s:auto_cursorline(event)
+       if a:event ==# 'WinEnter'
+         setlocal cursorline
+         let s:cursorline_lock = 2
+       elseif a:event ==# 'WinLeave'
+         setlocal nocursorline
+       elseif a:event ==# 'CursorMoved'
+         if s:cursorline_lock
+           if 1 < s:cursorline_lock
+             let s:cursorline_lock = 1
+           else
+             setlocal nocursorline
+             let s:cursorline_lock = 0
+           endif
+         endif
+       elseif a:event ==# 'CursorHold'
+         setlocal cursorline
+         let s:cursorline_lock = 1
+       endif
+     endfunction
+   augroup END
+ endif
 
-" [rectangle]
-onoremap ar  a]
-xnoremap ar  a]
-onoremap ir  i]
-xnoremap ir  i]
+ " easy escape
+ "inoremap jj <ESC>
+ "onoremap jj <ESC>
+ "inoremap j<Space> j
+ "onoremap j<Space> j
 
-" 'quote'
-onoremap aq  a'
-xnoremap aq  a'
-onoremap iq  i'
-xnoremap iq  i'
+ " a>, i], etc... "{{{
+ " <angle>
+ onoremap aa  a>
+ xnoremap aa  a>
+ onoremap ia  i>
+ xnoremap ia  i>
 
-" "double quote"
-onoremap ad  a"
-xnoremap ad  a"
-onoremap id  i"
-xnoremap id  i"
-"}}}
+ " [rectangle]
+ onoremap ar  a]
+ xnoremap ar  a]
+ onoremap ir  i]
+ xnoremap ir  i]
 
-" Clear highlight.
-nnoremap <ESC><ESC> :nohlsearch<CR>
+ " 'quote'
+ onoremap aq  a'
+ xnoremap aq  a'
+ onoremap iq  i'
+ xnoremap iq  i'
 
-" Command-line mode keymappings:"{{{
-" <C-a>, A: move to head.
-cnoremap <C-a>          <Home>
-" <C-b>: previous char.
-cnoremap <C-b>          <Left>
-" <C-d>: delete char.
-cnoremap <C-d>          <Del>
-" <C-e>, E: move to end.
-cnoremap <C-e>          <End>
-" <C-f>: next char.
-cnoremap <C-f>          <Right>
-" <C-n>: next history.
-cnoremap <C-n>          <Down>
-" <C-p>: previous history.
-cnoremap <C-p>          <Up>
-" <C-k>, K: delete to end.
-cnoremap <C-k> <C-\>e getcmdpos() == 1 ?
-      \ '' : getcmdline()[:getcmdpos()-2]<CR>
-" <C-y>: paste.
-cnoremap <C-y>          <C-r>*
-"}}}
+ " "double quote"
+ onoremap ad  a"
+ xnoremap ad  a"
+ onoremap id  i"
+ xnoremap id  i"
+ "}}}
 
-" Command line buffer."{{{
-nnoremap <SID>(command-line-enter) q:
-xnoremap <SID>(command-line-enter) q:
-nnoremap <SID>(command-line-norange) q:<C-u>
+ " Clear highlight.
+ nnoremap <ESC><ESC> :nohlsearch<CR>
 
-" [Space]: Other useful commands "{{{
-" Smart space mapping.
-" Notice: when starting other <Space> mappings in noremap, disappeared
-" [Space].
-nmap  <Space>   [Space]
-xmap  <Space>   [Space]
-nnoremap  [Space]   <Nop>
-xnoremap  [Space]   <Nop>
+ " Command-line mode keymappings:"{{{
+ " <C-a>, A: move to head.
+ cnoremap <C-a>          <Home>
+ " <C-b>: previous char.
+ cnoremap <C-b>          <Left>
+ " <C-d>: delete char.
+ cnoremap <C-d>          <Del>
+ " <C-e>, E: move to end.
+ cnoremap <C-e>          <End>
+ " <C-f>: next char.
+ cnoremap <C-f>          <Right>
+ " <C-n>: next history.
+ cnoremap <C-n>          <Down>
+ " <C-p>: previous history.
+ cnoremap <C-p>          <Up>
+ " <C-k>, K: delete to end.
+ cnoremap <C-k> <C-\>e getcmdpos() == 1 ?
+       \ '' : getcmdline()[:getcmdpos()-2]<CR>
+ " <C-y>: paste.
+ cnoremap <C-y>          <C-r>*
+ "}}}
 
-" Toggle relativenumber.
-nnoremap <silent> [Space].
-      \ :<C-u>call ToggleOption('relativenumber')<CR>
-nnoremap <silent> [Space]p
-      \ :<C-u>call ToggleOption('paste')<CR>:set mouse=<CR>
-" Toggle highlight.
-nnoremap <silent> [Space]/
-      \ :<C-u>call ToggleOption('hlsearch')<CR>
-" Toggle cursorline.
-nnoremap <silent> [Space]cl
-      \ :<C-u>call ToggleOption('cursorline')<CR>
-" Set autoread.
-nnoremap [Space]ar
-      \ :<C-u>setlocal autoread<CR>
-" Output encoding information.
-nnoremap <silent> [Space]en
-      \ :<C-u>setlocal encoding? termencoding? fenc? fencs?<CR>
-" Set spell check.
-nnoremap [Space]sp
-      \ :<C-u>call ToggleOption('spell')<CR>
-nnoremap [Space]w
-      \ :<C-u>update<CR>
-"      \ :<C-u>call ToggleOption('wrap')<CR>
-" Echo syntax name.
-nnoremap [Space]sy
-      \ :<C-u>echo synIDattr(synID(line('.'), col('.'), 1), "name")<CR>
+ " Command line buffer."{{{
+ nnoremap <SID>(command-line-enter) q:
+ xnoremap <SID>(command-line-enter) q:
+ nnoremap <SID>(command-line-norange) q:<C-u>
 
-" Easily edit .vimrc and .gvimrc "{{{
-nnoremap <silent> [Space]ev  :<C-u>edit $MYVIMRC<CR>
-nnoremap <silent> [Space]eg  :<C-u>edit $MYGVIMRC<CR>
-" Load .gvimrc after .vimrc edited at GVim.
-nnoremap <silent> [Space]rv :<C-u>source $MYVIMRC \|
-      \ if has('gui_running') \|
-      \   source $MYGVIMRC \|
-      \ endif \| echo "source $MYVIMRC"<CR>
-nnoremap <silent> [Space]rg
-      \ :<C-u>source $MYGVIMRC \|
-      \ echo "source $MYGVIMRC"<CR>
-"}}}
-" Easily syntax change.
-"nnoremap <silent> [Space]ft :<C-u>Unite -start-insert filetype<CR>
-" for folding
-noremap [Space]j zj
-noremap [Space]k zk
-noremap [Space]h zc
-noremap [Space]l zo
-noremap [Space]i zMzv
-noremap [Space]rr zR
-noremap [Space]m zM
-" VimShellPop
-nnoremap <silent> [Space]; :<C-u>VimShellPop<CR>
-" for vim-altr
-nmap [Space]al <Plug>(altr-forward)
+ " [Space]: Other useful commands "{{{
+ " Smart space mapping.
+ " Notice: when starting other <Space> mappings in noremap, disappeared
+ " [Space].
+ nmap  <Space>   [Space]
+ xmap  <Space>   [Space]
+ nnoremap  [Space]   <Nop>
+ xnoremap  [Space]   <Nop>
 
-" Toggle options. "{{{
-function! ToggleOption(option_name)
-  execute 'setlocal' a:option_name.'!'
-  execute 'setlocal' a:option_name.'?'
-endfunction  "}}}
-" Toggle variables. "{{{
-function! ToggleVariable(variable_name)
-  if eval(a:variable_name)
-    execute 'let' a:variable_name.' = 0'
-  else
-    execute 'let' a:variable_name.' = 1'
-  endif
-  echo printf('%s = %s', a:variable_name, eval(a:variable_name))
-endfunction  "}}}
+ " Toggle relativenumber.
+ nnoremap <silent> [Space].
+       \ :<C-u>call ToggleOption('relativenumber')<CR>
+ nnoremap <silent> [Space]p
+       \ :<C-u>call ToggleOption('paste')<CR>:set mouse=<CR>
+ " Toggle highlight.
+ nnoremap <silent> [Space]/
+       \ :<C-u>call ToggleOption('hlsearch')<CR>
+ " Toggle cursorline.
+ nnoremap <silent> [Space]cl
+       \ :<C-u>call ToggleOption('cursorline')<CR>
+ " Set autoread.
+ nnoremap [Space]ar
+       \ :<C-u>setlocal autoread<CR>
+ " Output encoding information.
+ nnoremap <silent> [Space]en
+       \ :<C-u>setlocal encoding? termencoding? fenc? fencs?<CR>
+ " Set spell check.
+ nnoremap [Space]sp
+       \ :<C-u>call ToggleOption('spell')<CR>
+ nnoremap [Space]w
+       \ :<C-u>update<CR>
+ "      \ :<C-u>call ToggleOption('wrap')<CR>
+ " Echo syntax name.
+ nnoremap [Space]sy
+       \ :<C-u>echo synIDattr(synID(line('.'), col('.'), 1), "name")<CR>
 
-" 戦闘力
-function! Scouter(file, ...)
-  let pat = '^\s*$\|^\s*"'
-  let lines = readfile(a:file)
-  if !a:0 || !a:1
-    let lines = split(substitute(join(lines, "\n"), '\n\s*\\', '', 'g'), "\n")
-  endif
-  return len(filter(lines,'v:val !~ pat'))
-endfunction
-command! -bar -bang -nargs=? -complete=file Scouter
-\        echo Scouter(empty(<q-args>) ? $MYVIMRC : expand(<q-args>), <bang>0)
+ " Easily edit .vimrc and .gvimrc "{{{
+ nnoremap <silent> [Space]ev  :<C-u>edit $MYVIMRC<CR>
+ nnoremap <silent> [Space]eg  :<C-u>edit $MYGVIMRC<CR>
+ " Load .gvimrc after .vimrc edited at GVim.
+ nnoremap <silent> [Space]rv :<C-u>source $MYVIMRC \|
+       \ if has('gui_running') \|
+       \   source $MYGVIMRC \|
+       \ endif \| echo "source $MYVIMRC"<CR>
+ nnoremap <silent> [Space]rg
+       \ :<C-u>source $MYGVIMRC \|
+       \ echo "source $MYGVIMRC"<CR>
+ "}}}
+ " Easily syntax change.
+ "nnoremap <silent> [Space]ft :<C-u>Unite -start-insert filetype<CR>
+ " for folding
+ noremap [Space]j zj
+ noremap [Space]k zk
+ noremap [Space]h zc
+ noremap [Space]l zo
+ noremap [Space]i zMzv
+ noremap [Space]rr zR
+ noremap [Space]m zM
+ " VimShellPop
+ nnoremap <silent> [Space]; :<C-u>VimShellPop<CR>
+ " for vim-altr
+ nmap [Space]al <Plug>(altr-forward)
 
-"set re=1
+ " Toggle options. "{{{
+ function! ToggleOption(option_name)
+   execute 'setlocal' a:option_name.'!'
+   execute 'setlocal' a:option_name.'?'
+ endfunction  "}}}
+ " Toggle variables. "{{{
+ function! ToggleVariable(variable_name)
+   if eval(a:variable_name)
+     execute 'let' a:variable_name.' = 0'
+   else
+     execute 'let' a:variable_name.' = 1'
+   endif
+   echo printf('%s = %s', a:variable_name, eval(a:variable_name))
+ endfunction  "}}}
 
-filetype off
+ " 戦闘力
+ function! Scouter(file, ...)
+   let pat = '^\s*$\|^\s*"'
+   let lines = readfile(a:file)
+   if !a:0 || !a:1
+     let lines = split(substitute(join(lines, "\n"), '\n\s*\\', '', 'g'), "\n")
+   endif
+   return len(filter(lines,'v:val !~ pat'))
+ endfunction
+ command! -bar -bang -nargs=? -complete=file Scouter
+ \        echo Scouter(empty(<q-args>) ? $MYVIMRC : expand(<q-args>), <bang>0)
 
-if has('vim_starting')
-  set runtimepath+=~/.bundle/neobundle.vim/
-endif
+ "set re=1
 
-call neobundle#begin(expand('~/.bundle/'))
-" Let NeoBundle manage NeoBundle
-NeoBundleFetch 'Shougo/neobundle.vim'
-call neobundle#end()
+ filetype off
 
-NeoBundle 'tpope/vim-rails.git'
+ if &compatible
+   set nocompatible               " Be iMproved
+ endif
+
+ " Required:
+ set runtimepath^=~/.vim/bundle/neobundle.vim/
+
+ " Required:
+ call neobundle#begin(expand('~/.vim/bundle/'))
+
+ " Let NeoBundle manage NeoBundle
+ " Required:
+ NeoBundleFetch 'Shougo/neobundle.vim'
+ NeoBundle 'tpope/vim-rails.git'
 NeoBundleLazy 'mattn/emmet-vim', { 'autoload' : {
     \ 'filetypes' : ['eruby', 'scss', 'css', 'html', 'scss.css', 'jst', 'eco']
     \ }}
@@ -371,8 +379,7 @@ let g:unite_enable_start_insert = 1
 let g:unite_enable_split_vertically = 0
 let g:unite_winwidth = 40
 let g:unite_source_file_mru_long_limit = 100
-call unite#custom_source('file_rec', 'ignore_pattern', 'vendor/\|tmp/\|log/')
-call unite#custom_source('file_rec/async', 'ignore_pattern', 'vendor/\|tmp/\|log/')
+
 " バッファ一覧
 nnoremap <silent> ,ub :<C-u>Unite buffer<CR>
 " ファイル一覧
@@ -495,7 +502,7 @@ NeoBundle 'h1mesuke/textobj-wiw'
 NeoBundle 'rhysd/vim-textobj-ruby'
 NeoBundle "kana/vim-textobj-indent"
 
-let g:neosnippet#snippets_directory='~/vim_snippets'
+let g:neosnippet#snippets_directory='~/.vim/snippets'
 NeoBundle 'Shougo/neosnippet'
 NeoBundle "Shougo/neosnippet-snippets"
 " <TAB>: completion.
@@ -534,7 +541,6 @@ NeoBundle 'Zenburn'
 NeoBundle 'desert.vim'
 NeoBundle 'altercation/vim-colors-solarized'
 NeoBundle 'Railscasts-Theme-GUIand256color'
-colorscheme railscasts
 set background=dark
 "let g:solarized_termcolors=256
 " jk
@@ -652,11 +658,20 @@ let php_htmlInStrings = 1
 let php_noShortTags = 1
 let php_parent_error_close = 1
 
-if has('gui_running')
-"  NeoBundle 'todesking/ruby_hl_lvar.vim'
-endif
+ " My Bundles here:
+ " Refer to |:NeoBundle-examples|.
+ " Note: You don't set neobundle setting in .gvimrc!
 
+ call neobundle#end()
 
-filetype plugin indent on
-filetype on
-NeoBundleCheck
+ call unite#custom_source('file_rec', 'ignore_pattern', 'vendor/\|tmp/\|log/')
+ call unite#custom_source('file_rec/async', 'ignore_pattern', 'vendor/\|tmp/\|log/')
+
+ colorscheme railscasts
+
+ " Required:
+ filetype plugin indent on
+
+ " If there are uninstalled bundles found on startup,
+ " this will conveniently prompt you to install them.
+ NeoBundleCheck

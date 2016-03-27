@@ -45,43 +45,9 @@ alias rm="rmtrash"
 
 # Git
 alias g='git'
-
-# git push
-function github-push() {
-  local repository=origin
-  while true; do
-    if [ "$1" = -f ]; then
-      local f_option=$1; shift
-    elif [ "$1" = --repo ]; then
-      repository=$2; shift 2
-    else break; fi
-  done
-
-  local branch=${1:-$(git rev-parse --abbrev-ref HEAD)}
-  local parent_branch=${2:-master}
-
-  git push $f_option $repository $branch \
-  && github-urls $branch $parent_branch
-}
-
-function github-urls() {
-  local src_branch=${1:-$(git rev-parse --abbrev-ref HEAD)}
-  local dst_branch=${2:-master}
-  local url=$(github-push-url)
-
-  echo "$url "
-  echo "$url/tree/$src_branch "
-  if [ $src_branch != $dst_branch ]; then
-    echo "$url/compare/${dst_branch}...${src_branch} "
-  fi
-}
-
-function github-push-url() {
-  git remote -v | grep '(push)' | awk '{print $2}' | sed -e "s/^[a-z]*@\([a-z0-9\.]*\):/https:\/\/\1\//g" | sed 's/\.git$//g'
-}
-
-alias gps='git push'
-alias gpsf='git push -f'
+alias s='git s'
+alias m='git checkout master'
+alias d='git d'
 
 # Unix
 alias ..='cd ..'
@@ -89,13 +55,14 @@ alias t='tmux'
 alias grep='grep --color=auto'
 
 # Ruby
-alias b='bundle'
 alias be='bundle exec'
-alias べ='bundle exec'
 alias bi='bundle install'
-alias び='bundle install'
 alias bu='bundle update'
-alias ぶ='bundle update'
+
+# Haskell
+alias ghc='stack ghc'
+alias ghci='stack ghci'
+alias runhaskell='stack runhaskell'
 
 if which pyenv > /dev/null; then
   export PYENV_ROOT="${HOME}/.pyenv"
