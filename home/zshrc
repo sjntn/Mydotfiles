@@ -36,6 +36,7 @@ alias notes='open -a notes'
 alias wunderlist='open -a Wunderlist'
 alias xcode='open -a Xcode'
 alias tweetdeck='open -a TweetDeck'
+alias boxy='open -a Boxy'
 
 # weather
 alias wtokyo="curl -4 wttr.in/tokyo"
@@ -94,3 +95,4 @@ export PATH=/usr/local/share/npm/bin:$PATH
 export PATH=$HOME/.nodebrew/current/bin:$PATH
 export NODE_PATH=$NODE_PATH::/Users/Jinda/npm/lib/node_modules:/Users/Jinda/npm/lib/node_modules:/Users/Jinda/npm/lib/node_modules
 export PATH=~/.bin:$PATH
+export PATH=$PATH:/usr/local/Cellar/php55/5.5.36/bin:$PATH
