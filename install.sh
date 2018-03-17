@@ -25,7 +25,7 @@ then
 fi
 
 # Install software and apps
-brew brewdle
+brew bundle
 
 # Show hidden files with Finder
 read -p "Do you wish to show hidden files with Finder? y/n " yn
